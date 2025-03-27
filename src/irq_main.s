@@ -39,12 +39,12 @@ irq_main:
 			lda #0x04
 			sta 0xd020
 
-			jsr docopystuff
+			jsr maptexture
 
 			lda #0x06
 			sta 0xd020
 
-			jsr modplay_play
+			;jsr modplay_play
 
 			lda #0x01
 			sta 0xd020
@@ -178,8 +178,8 @@ copyline
 
 		.byte 0x00							; copy, no chain
 		.word 127							; count 128-1 because I don't want to touch the last gotox320 bytes
-cpsrc:	.word sine							; src (fill value)
-		.byte 0x00							; src bank (ignored)
+cpsrc:	.word 0								; src (fill value)
+		.byte 0x03							; src bank
 cpdst:	.word SCREEN+SCREENWIDTH			; dst
 		.byte 0x00							; dst bank
 		.byte 0x00							; cmd hi
@@ -191,14 +191,22 @@ cpdst:	.word SCREEN+SCREENWIDTH			; dst
 
 frame	.byte 0
 
-docopystuff
+maptexture:
 
 		inc frame
+		rts
+
+; ------------------------------------------------------------------------------------
+
+		.public fillspherepositions
+fillspherepositions
 
 		ldx #0
 
-		lda frame
+		lda #64
 		sta cpsrc+0
+		lda #0x0
+		sta cpsrc+1
 
 		lda #.byte0 (SCREEN+SCREENWIDTH2)
 		sta cpdst+0
@@ -216,7 +224,9 @@ copylineloop:
 		adc #.byte1 RRBSCREENWIDTH2
 		sta cpdst+1
 
-		inc cpsrc+0
+		;inc cpsrc+0
+		inc cpsrc+1
+		inc cpsrc+1
 
 		inx
 		cpx #50
@@ -225,3 +235,72 @@ copylineloop:
 		rts
 
 ; ------------------------------------------------------------------------------------
+
+		.public fillsinetables
+fillsinetables:
+
+		lda #0
+		sta 0xd770
+		sta 0xd771
+		sta 0xd772
+		sta 0xd773
+		sta 0xd774
+		sta 0xd775
+		sta 0xd776
+		sta 0xd777
+		sta cpsdst+0
+		sta cpsdst+1
+
+		ldx #0
+fillsineouterloop:
+
+		lda spherediam,x
+		sta 0xd774
+		lsr a
+		sta diamhalf
+		sec
+		lda #128
+		sbc diamhalf
+		sta diamoffset
+
+		ldy #0
+fillsineloop		
+		lda sine,y
+		sta 0xd770
+		lda 0xd779
+		clc
+		adc diamoffset
+		sta 0xe000,y
+		sta 0xe100,y
+		iny
+		bne fillsineloop
+
+		sta 0xd707							; inline DMA copy
+		.byte 0x80, 0						; sourcemb
+		.byte 0x81, 0						; destmb
+		.byte 0x00							; end of job options
+		.byte 0x00							; copy, no chain
+		.word 512							; count
+		.word 0xe000						; src (fill value)
+		.byte 0x00							; src bank (ignored)
+cpsdst:	.word 0								; dst
+		.byte 0x03							; dst bank
+		.byte 0x00							; cmd hi
+		.word 0x0000						; modulo, ignored
+
+		inc cpsdst+1
+		inc cpsdst+1
+
+		inx
+		cpx #50
+		bne fillsineouterloop
+		rts
+
+; ------------------------------------------------------------------------------------
+
+diamhalf	.byte 0
+diamoffset	.byte 0
+
+spherediam
+		.byte  46,  84, 109, 129, 145, 159, 171, 181, 191, 200, 207, 214, 221, 226, 231, 236, 240, 243, 246, 249, 251, 252, 254, 255, 255
+		.byte 255, 255, 254, 252, 251, 249, 246, 243, 240, 236, 231, 226, 221, 214, 207, 200, 191, 181, 171, 159, 145, 129, 109,  84,  46

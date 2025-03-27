@@ -10,6 +10,8 @@
 #include "program.h"
 
 extern void irq_main();
+extern void fillsinetables();
+extern void fillspherepositions();
 
 void program_mapcolourmem()
 {
@@ -47,6 +49,7 @@ void program_loaddata()
 	floppy_iffl_fast_load_init("DATA");
 	floppy_iffl_fast_load(); // chars
 	floppy_iffl_fast_load(); // pal
+	floppy_iffl_fast_load(); // earth chars
 	floppy_iffl_fast_load(); // song
 }
 
@@ -125,6 +128,9 @@ void program_init()
 		}
 		foobar++;
 	}
+
+	fillsinetables();
+	fillspherepositions();
 }
 
 uint8_t offset = 0;
