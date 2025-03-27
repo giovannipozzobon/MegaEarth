@@ -219,7 +219,7 @@ maptexture:
 
 		ldx #0
 
-		lda #0
+		lda frame
 		sta cptsrc+0
 		lda #0
 		sta cptsrc+1
