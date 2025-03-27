@@ -167,7 +167,7 @@ endloop:
 
 ; ------------------------------------------------------------------------------------
 
-copyline
+copypositionline
 
 		; load up c64run at $4,2000
 		sta 0xd707							; inline DMA copy
@@ -178,9 +178,31 @@ copyline
 
 		.byte 0x00							; copy, no chain
 		.word 127							; count 128-1 because I don't want to touch the last gotox320 bytes
-cpsrc:	.word 0								; src (fill value)
+cppsrc:	.word 0								; src (fill value)
 		.byte 0x03							; src bank
-cpdst:	.word SCREEN+SCREENWIDTH			; dst
+cppdst:	.word SCREEN+SCREENWIDTH			; dst
+		.byte 0x00							; dst bank
+		.byte 0x00							; cmd hi
+		.word 0x0000						; modulo, ignored
+
+		rts
+
+; ------------------------------------------------------------------------------------
+
+copytextureline
+
+		; load up c64run at $4,2000
+		sta 0xd707							; inline DMA copy
+		.byte 0x80, 0						; sourcemb
+		.byte 0x81, 0						; destmb
+		.byte 0x85, 4						; dst skip rate
+		.byte 0x00							; end of job options
+
+		.byte 0x00							; copy, no chain
+		.word 127							; count 128-1 because I don't want to touch the last gotox320 bytes
+cptsrc:	.word 0								; src (fill value)
+		.byte 0x02							; src bank
+cptdst:	.word SCREEN+SCREENWIDTH			; dst
 		.byte 0x00							; dst bank
 		.byte 0x00							; cmd hi
 		.word 0x0000						; modulo, ignored
@@ -194,6 +216,37 @@ frame	.byte 0
 maptexture:
 
 		inc frame
+
+		ldx #0
+
+		lda #0
+		sta cptsrc+0
+		lda #0
+		sta cptsrc+1
+
+		lda #.byte0 (SCREEN+SCREENWIDTH2+2)
+		sta cptdst+0
+		lda #.byte1 (SCREEN+SCREENWIDTH2+2)
+		sta cptdst+1
+
+copytxtlineloop:
+		jsr copytextureline
+
+		clc
+		lda cptdst+0
+		adc #.byte0 RRBSCREENWIDTH2
+		sta cptdst+0
+		lda cptdst+1
+		adc #.byte1 RRBSCREENWIDTH2
+		sta cptdst+1
+
+		inc cptsrc+1
+		inc cptsrc+1
+
+		inx
+		cpx #50
+		bne copytxtlineloop
+
 		rts
 
 ; ------------------------------------------------------------------------------------
@@ -204,33 +257,32 @@ fillspherepositions
 		ldx #0
 
 		lda #64
-		sta cpsrc+0
+		sta cppsrc+0
 		lda #0x0
-		sta cpsrc+1
+		sta cppsrc+1
 
 		lda #.byte0 (SCREEN+SCREENWIDTH2)
-		sta cpdst+0
+		sta cppdst+0
 		lda #.byte1 (SCREEN+SCREENWIDTH2)
-		sta cpdst+1
+		sta cppdst+1
 
-copylineloop:
-		jsr copyline
+copyposlineloop:
+		jsr copypositionline
 
 		clc
-		lda cpdst+0
+		lda cppdst+0
 		adc #.byte0 RRBSCREENWIDTH2
-		sta cpdst+0
-		lda cpdst+1
+		sta cppdst+0
+		lda cppdst+1
 		adc #.byte1 RRBSCREENWIDTH2
-		sta cpdst+1
+		sta cppdst+1
 
-		;inc cpsrc+0
-		inc cpsrc+1
-		inc cpsrc+1
+		inc cppsrc+1
+		inc cppsrc+1
 
 		inx
 		cpx #50
-		bne copylineloop
+		bne copyposlineloop
 
 		rts
 
