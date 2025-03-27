@@ -59,6 +59,8 @@ void main()
 	VIC3.H640			= 0;									// enable 640 horizontal width
 	VIC4.CHRXSCL		= 0x78;
 
+	VIC4.TBDRPOSLSB		= 20;
+
 	// to maximize RRB:
 	// DISABLE RRB double buffering		NORRDEL	= 0
 	// ENABLE RRB double height			DBLRR	= 1

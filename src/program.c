@@ -70,8 +70,8 @@ void program_init()
 	{
 		for(uint16_t x=0; x<SCREENWIDTH; x++)
 		{
-			poke(SCREEN + y*RRBSCREENWIDTH2 + 2*x + 0, (i >> 0) & 0xff);
-			poke(SCREEN + y*RRBSCREENWIDTH2 + 2*x + 1, (i >> 8) & 0xff);
+			lpoke(SCREEN + y*RRBSCREENWIDTH2 + 2*x + 0, (i >> 0) & 0xff);
+			lpoke(SCREEN + y*RRBSCREENWIDTH2 + 2*x + 1, (i >> 8) & 0xff);
 		}
 	}
 
@@ -83,8 +83,8 @@ void program_init()
 		{
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, 0b00001100); // set to NCM mode and trim pixels
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, 0);
-			poke(SCREEN          + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, ((i >> 0) & 0xff) + ((x>>1) & 0x0f) + 1);
-			poke(SCREEN          + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, ((i >> 8) & 0xff));
+			lpoke(SCREEN          + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, ((i >> 0) & 0xff) + ((x>>1) & 0x0f) + 1);
+			lpoke(SCREEN          + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, ((i >> 8) & 0xff));
 		}
 	}
 
@@ -96,8 +96,8 @@ void program_init()
 		{
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, 0b10010000); // set gotox and transparency
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, 0); // pixel row mask flags
-			poke(SCREEN          + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, (i >> 0) & 0xff);
-			poke(SCREEN          + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, (i >> 8) & 0xff);
+			lpoke(SCREEN          + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, (i >> 0) & 0xff);
+			lpoke(SCREEN          + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, (i >> 8) & 0xff);
 			i += 4;
 		}
 	}
@@ -105,8 +105,25 @@ void program_init()
 	// set last gotox to 320
 	for(uint16_t y=0; y<25; y++)
 	{
-		poke(SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 4*(RRBSPRITES-1) + 0, (320 >> 0) & 0xff);
-		poke(SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 4*(RRBSPRITES-1) + 1, (320 >> 8) & 0xff);
+		lpoke(SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 4*(RRBSPRITES-1) + 0, (320 >> 0) & 0xff);
+		lpoke(SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 4*(RRBSPRITES-1) + 1, (320 >> 8) & 0xff);
+	}
+
+	uint16_t foobar = 0;
+	// fill positions with spherical coordinates
+	for(uint16_t y=0; y<25; y++)
+	{
+		uint16_t i = 0;
+		uint32_t pos1 = SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 0;
+		uint32_t pos2 = SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 1;
+		for(uint16_t x=0; x<RRBSPRITES-1; x++)
+		{
+			uint16_t sin = peek(&sine+64+foobar+i);
+			lpoke(pos1 + 4*x, (sin+32) & 0xff);
+			lpoke(pos2 + 4*x, (sin+32) >> 8);
+			i++;
+		}
+		foobar++;
 	}
 }
 
@@ -115,20 +132,6 @@ uint8_t offset = 0;
 void program_update()
 {
 	//program_mapcolourmem();
-
-	for(uint16_t y=0; y<20; y++)
-	{
-		uint16_t i = 0;
-		uint16_t pos1 = SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 0;
-		uint16_t pos2 = SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 1;
-		for(uint16_t x=0; x<RRBSPRITES-1; x++)
-		{
-			uint16_t sin = peek(&sine+64+i);
-			poke(pos1 + 4*x, (sin+32) & 0xff);
-			poke(pos2 + 4*x, (sin+32) >> 8);
-			i++;
-		}
-	}
 
 	// offset++;
 
