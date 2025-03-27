@@ -5,6 +5,8 @@
 			.extern modplay_play
 			.extern program_update
 
+SCREEN			.equ 0x8000
+
 SCREENWIDTH		.equ 20
 RRBSPRITES		.equ 128
 RRBWIDTH		.equ (2*RRBSPRITES)
@@ -40,14 +42,14 @@ irq_main:
 			lda #0x01
 			sta 0xd021
 
-			lda #.byte0 (0x8000 + 0*RRBSCREENWIDTH2)
+			lda #.byte0 (SCREEN + 0*RRBSCREENWIDTH2)
 			sta 0xd060
-			lda #.byte1 (0x8000 + 0*RRBSCREENWIDTH2)
+			lda #.byte1 (SCREEN + 0*RRBSCREENWIDTH2)
 			sta 0xd061
 
-			lda #.byte0 (0x8000 + 1*RRBSCREENWIDTH2)
+			lda #.byte0 (SCREEN + 1*RRBSCREENWIDTH2)
 			sta scrptrlo+1
-			lda #.byte1 (0x8000 + 1*RRBSCREENWIDTH2)
+			lda #.byte1 (SCREEN + 1*RRBSCREENWIDTH2)
 			sta scrptrhi+1
 
 			lda #0x68						; reset textypos for start of screen
@@ -60,7 +62,7 @@ irq_main:
 			lda #0x00
 			sta textyposhi+1
 
-			lda #0x33+2
+			lda #0x35
 			sta 0xd012
 			sta raster+1
 
@@ -88,9 +90,9 @@ irq_main2:
 
 			inc 0xd020
 
-scrptrlo:	lda #.byte0 (0x8000 + 1*RRBSCREENWIDTH2)
+scrptrlo:	lda #.byte0 (SCREEN + 1*RRBSCREENWIDTH2)
 			sta 0xd060
-scrptrhi:	lda #.byte1 (0x8000 + 1*RRBSCREENWIDTH2)
+scrptrhi:	lda #.byte1 (SCREEN + 1*RRBSCREENWIDTH2)
 			sta 0xd061
 
 textyposlo:	lda #0x67
@@ -120,6 +122,8 @@ textyposhi:	lda #0x00
 			sta raster+1
 			cmp #0x35+25*4
 			beq endloop
+
+			;jmp endloop
 
 raster:		lda #0x34
 			sta 0xd012

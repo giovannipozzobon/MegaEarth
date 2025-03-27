@@ -83,8 +83,8 @@ void program_init()
 		{
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, 0b00001100); // set to NCM mode and trim pixels
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, 0);
-			lpoke(SCREEN          + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, ((i >> 0) & 0xff) + ((x>>1) & 0x0f) + 1);
-			lpoke(SCREEN          + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, ((i >> 8) & 0xff));
+			lpoke(SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, ((i >> 0) & 0xff) + ((x>>1) & 0x0f) + 1);
+			lpoke(SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, ((i >> 8) & 0xff));
 		}
 	}
 
@@ -96,8 +96,8 @@ void program_init()
 		{
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, 0b10010000); // set gotox and transparency
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, 0); // pixel row mask flags
-			lpoke(SCREEN          + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, (i >> 0) & 0xff);
-			lpoke(SCREEN          + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, (i >> 8) & 0xff);
+			lpoke(SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, (i >> 0) & 0xff);
+			lpoke(SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, (i >> 8) & 0xff);
 			i += 4;
 		}
 	}
