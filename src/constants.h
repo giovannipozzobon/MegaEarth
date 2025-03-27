@@ -1,7 +1,7 @@
 #ifndef __CONSTANTS_H
 #define __CONSTANTS_H
 
-#define SCREEN					0x08000
+#define SCREEN					0x05000
 
 // theoretical maximum number of sprites:
 // $2000/25 = 327

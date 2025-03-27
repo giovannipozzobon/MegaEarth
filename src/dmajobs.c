@@ -14,7 +14,7 @@ dma_job dma_clearcolorram1 =
 	.dbank					= ((SAFE_COLOR_RAM + 0) >> 20),
 	.end_options			= 0x00,
 	.command				= 0b00000011, // fill, no chain
-	.count					= (RRBSCREENWIDTH*25),
+	.count					= (RRBSCREENWIDTH*50),
 	.source					= 0b0000000000001000, // 00001000 = NCM chars. // 00001100 to trim 8 pixels from right
 	.source_bank			= 0x00,
 	.destination			= (((SAFE_COLOR_RAM + 0) >>  0) & 0xffff),
@@ -35,7 +35,7 @@ dma_job dma_clearcolorram2 =
 	.dbank					= ((SAFE_COLOR_RAM + 1) >> 20),
 	.end_options			= 0x00,
 	.command				= 0b00000011, // fill, no chain
-	.count					= (RRBSCREENWIDTH*25),
+	.count					= (RRBSCREENWIDTH*50),
 	.source					= 0b0000000000001111, // 00000000 = $0f = pixels with value $0f take on the colour value of $0f as well
 	.source_bank			= 0x00,
 	.destination			= (((SAFE_COLOR_RAM + 1) >>  0) & 0xffff),

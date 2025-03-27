@@ -66,7 +66,7 @@ void program_init()
 
 	// render the first char for the background layer
 	uint16_t i = GFXMEM / 64;
-	for(uint16_t y=0; y<25; y++)
+	for(uint16_t y=0; y<50; y++)
 	{
 		for(uint16_t x=0; x<SCREENWIDTH; x++)
 		{
@@ -76,7 +76,7 @@ void program_init()
 	}
 
 	// render the sprites
-	for(uint16_t y=0; y<25; y++)
+	for(uint16_t y=0; y<50; y++)
 	{
 		i = (GFXMEM / 64);
 		for(uint16_t x=0; x<RRBWIDTH; x++)
@@ -89,7 +89,7 @@ void program_init()
 	}
 
 	// render gotox chars and their positions
-	for(uint16_t y=0; y<25; y++)
+	for(uint16_t y=0; y<50; y++)
 	{
 		i = 0;
 		for(uint16_t x=0; x<RRBWIDTH; x+=2)
@@ -103,7 +103,7 @@ void program_init()
 	}
 
 	// set last gotox to 320
-	for(uint16_t y=0; y<25; y++)
+	for(uint16_t y=0; y<50; y++)
 	{
 		lpoke(SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 4*(RRBSPRITES-1) + 0, (320 >> 0) & 0xff);
 		lpoke(SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 4*(RRBSPRITES-1) + 1, (320 >> 8) & 0xff);
@@ -111,7 +111,7 @@ void program_init()
 
 	uint16_t foobar = 0;
 	// fill positions with spherical coordinates
-	for(uint16_t y=0; y<25; y++)
+	for(uint16_t y=0; y<50; y++)
 	{
 		uint16_t i = 0;
 		uint32_t pos1 = SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 0;
@@ -119,8 +119,8 @@ void program_init()
 		for(uint16_t x=0; x<RRBSPRITES-1; x++)
 		{
 			uint16_t sin = peek(&sine+64+foobar+i);
-			lpoke(pos1 + 4*x, (sin+32) & 0xff);
-			lpoke(pos2 + 4*x, (sin+32) >> 8);
+			lpoke(pos1 + 4*x, sin & 0xff);
+			lpoke(pos2 + 4*x, sin >> 8);
 			i++;
 		}
 		foobar++;
