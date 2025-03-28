@@ -71,19 +71,19 @@ void program_init()
 		{
 			c = peek(PALETTE + 0*0x100 + x);
 			c = (c << 4) | (c >> 4);
-			d = c - 5*(p-1);
+			d = c - 8*(p-1);
 			if(d > c) d = 0;
 			c = (d << 4) | (d >> 4);
 			poke(PALETTE + 0*0x100 + p*16 + x, c);
 			c = peek(PALETTE + 1*0x100 + x);
 			c = (c << 4) | (c >> 4);
-			d = c - 5*(p-1);
+			d = c - 8*(p-1);
 			if(d > c) d = 0;
 			c = (d << 4) | (d >> 4);
 			poke(PALETTE + 1*0x100 + p*16 + x, c);
 			c = peek(PALETTE + 2*0x100 + x);
 			c = (c << 4) | (c >> 4);
-			d = c - 5*(p-1);
+			d = c - 8*(p-1);
 			if(d > c) d = 0;
 			c = (d << 4) | (d >> 4);
 			poke(PALETTE + 2*0x100 + p*16 + x, c);

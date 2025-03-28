@@ -61,6 +61,9 @@ void main()
 
 	VIC4.TBDRPOSLSB		= 20;
 
+	VIC4.BBDRPOSLSB		= 240;
+	VIC4.BBDRPOSMSB		= 1;
+
 	// to maximize RRB:
 	// DISABLE RRB double buffering		NORRDEL	= 0
 	// ENABLE RRB double height			DBLRR	= 1
@@ -71,7 +74,6 @@ void main()
 	VIC4.DBLRR			= 1;									// disable double-height rrb
 	VIC3.V400			= 1;									// enable 400 vertical height
 	VIC4.CHRYSCL		= 0;
-
 
 	VIC4.DISPROWS		= 25;									// display 50 rows of text
 

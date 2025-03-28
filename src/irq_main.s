@@ -20,25 +20,26 @@ irq_main:
 			phz
 
 			lda #0x0f
+			sta 0xd020
 			sta 0xd021
 
-			lda #0x02
-			sta 0xd020
+			;lda #0x02
+			;sta 0xd020
 
 			jsr program_update
 
-			lda #0x04
-			sta 0xd020
+			;lda #0x04
+			;sta 0xd020
 
 			jsr maptexture
 
-			lda #0x06
-			sta 0xd020
+			;lda #0x06
+			;sta 0xd020
 
 			jsr modplay_play
 
-			lda #0x0f
-			sta 0xd020
+			;lda #0x0f
+			;sta 0xd020
 
 			lda #.byte0 (SCREEN + 0*RRBSCREENWIDTH2)
 			sta 0xd060
@@ -96,8 +97,8 @@ irq_main2:
 			phy
 			phz
 
-			lda #0x01
-			sta 0xd020
+			;lda #0x01
+			;sta 0xd020
 
 scrptrlo:	lda #.byte0 (SCREEN + 1*RRBSCREENWIDTH2)
 			sta 0xd060
@@ -138,8 +139,8 @@ textyposhi:	lda #0x00
 			adc #0x00
 			sta textyposhi+1
 
-			lda #0x0f
-			sta 0xd020
+			;lda #0x0f
+			;sta 0xd020
 
 			clc
 			lda raster+1
