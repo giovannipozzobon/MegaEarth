@@ -63,16 +63,29 @@ void program_init()
 	modplay_enable();
 
 	// make palette gradients
-	uint16_t c = 0;
+	uint8_t c = 0;
+	uint8_t d = 0;
 	for(uint8_t p=1; p<16; p++)
 	{
 		for(uint8_t x=0; x<16; x++)
 		{
 			c = peek(PALETTE + 0*0x100 + x);
+			c = (c << 4) | (c >> 4);
+			d = c - 5*(p-1);
+			if(d > c) d = 0;
+			c = (d << 4) | (d >> 4);
 			poke(PALETTE + 0*0x100 + p*16 + x, c);
 			c = peek(PALETTE + 1*0x100 + x);
+			c = (c << 4) | (c >> 4);
+			d = c - 5*(p-1);
+			if(d > c) d = 0;
+			c = (d << 4) | (d >> 4);
 			poke(PALETTE + 1*0x100 + p*16 + x, c);
 			c = peek(PALETTE + 2*0x100 + x);
+			c = (c << 4) | (c >> 4);
+			d = c - 5*(p-1);
+			if(d > c) d = 0;
+			c = (d << 4) | (d >> 4);
 			poke(PALETTE + 2*0x100 + p*16 + x, c);
 		}
 	}
