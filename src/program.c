@@ -62,6 +62,7 @@ void program_init()
 	modplay_initmod(ATTICADDRESS, SAMPLEADRESS);
 	modplay_enable();
 
+	/*
 	// make palette gradients
 	uint8_t c = 0;
 	uint8_t d = 0;
@@ -89,6 +90,7 @@ void program_init()
 			poke(PALETTE + 2*0x100 + p*16 + x, c);
 		}
 	}
+	*/
 	
 	dma_runjob((__far char *)&dma_clearcolorram1);
 	dma_runjob((__far char *)&dma_clearcolorram2);
