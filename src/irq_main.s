@@ -244,7 +244,7 @@ copytxtlineloop:
 		inc cptsrc+1
 
 		inx
-		cpx #50
+		cpx #48
 		bne copytxtlineloop
 
 		rts
@@ -281,7 +281,7 @@ copyposlineloop:
 		inc cppsrc+1
 
 		inx
-		cpx #50
+		cpx #48
 		bne copyposlineloop
 
 		rts
@@ -344,7 +344,7 @@ cpsdst:	.word 0								; dst
 		inc cpsdst+1
 
 		inx
-		cpx #50
+		cpx #48
 		bne fillsineouterloop
 		rts
 
@@ -354,5 +354,5 @@ diamhalf	.byte 0
 diamoffset	.byte 0
 
 spherediam
-		.byte  46,  84, 109, 129, 145, 159, 171, 181, 191, 200, 207, 214, 221, 226, 231, 236, 240, 243, 246, 249, 251, 252, 254, 255, 255
-		.byte 255, 255, 254, 252, 251, 249, 246, 243, 240, 236, 231, 226, 221, 214, 207, 200, 191, 181, 171, 159, 145, 129, 109,  84,  46
+		.byte  47,  86, 111, 131, 148, 161, 174, 185, 194, 203, 210, 217, 224, 229, 234, 238, 242, 245, 248, 250, 252, 254, 254, 255
+		.byte 255, 254, 254, 252, 250, 248, 245, 242, 238, 234, 229, 224, 217, 210, 203, 194, 185, 174, 161, 148, 131, 111,  86,  47

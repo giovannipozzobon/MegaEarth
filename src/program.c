@@ -99,8 +99,8 @@ void program_init()
 		{
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, 0b10010000); // set gotox and transparency
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, 0); // pixel row mask flags
-			lpoke(SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, (i >> 0) & 0xff);
-			lpoke(SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, (i >> 8) & 0xff);
+			lpoke(SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, (320 >> 0) & 0xff);
+			lpoke(SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, (320 >> 8) & 0xff);
 			i += 4;
 		}
 	}
@@ -114,7 +114,7 @@ void program_init()
 
 	uint16_t foobar = 0;
 	// fill positions with spherical coordinates
-	for(uint16_t y=0; y<50; y++)
+	for(uint16_t y=0; y<48; y++)
 	{
 		uint16_t i = 0;
 		uint32_t pos1 = SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 0;
