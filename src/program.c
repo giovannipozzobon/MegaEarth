@@ -50,6 +50,7 @@ void program_loaddata()
 	floppy_iffl_fast_load(); // chars
 	floppy_iffl_fast_load(); // pal
 	floppy_iffl_fast_load(); // earth chars
+	floppy_iffl_fast_load(); // spheregrad values
 	floppy_iffl_fast_load(); // song
 }
 
@@ -85,7 +86,7 @@ void program_init()
 		for(uint16_t x=0; x<RRBWIDTH; x++)
 		{
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, 0b00001100); // set to NCM mode and trim pixels
-			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, 0);
+			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, 0b00000000); // set palette
 			lpoke(SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, ((i >> 0) & 0xff) + ((x>>1) & 0x0f) + 1);
 			lpoke(SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, ((i >> 8) & 0xff));
 		}
