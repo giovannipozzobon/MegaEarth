@@ -1,3 +1,5 @@
+#include "constants.h"
+
 			.rtmodel cpu, "*"
 
 			.extern _Zp
@@ -6,17 +8,6 @@
 			.extern program_update
 
 			.extern sine
-
-SCREEN			.equ 0x5000
-
-SCREENWIDTH		.equ 20
-RRBSPRITES		.equ 128
-RRBWIDTH		.equ (2*RRBSPRITES)
-RRBSCREENWIDTH	.equ (SCREENWIDTH+RRBWIDTH)
-
-SCREENWIDTH2	.equ (2*SCREENWIDTH)
-RRBSCREENWIDTH2	.equ (2*RRBSCREENWIDTH)
-RRBWIDTH2		.equ (2*RRBWIDTH)
 
  ; ------------------------------------------------------------------------------------
 
@@ -58,6 +49,16 @@ irq_main:
 			sta scrptrlo+1
 			lda #.byte1 (SCREEN + 1*RRBSCREENWIDTH2)
 			sta scrptrhi+1
+
+			lda #.byte0 COLOR_RAM_OFFSET
+			sta 0xd064
+			lda #.byte1 COLOR_RAM_OFFSET
+			sta 0xd065
+
+			lda #.byte0 (COLOR_RAM_OFFSET + 1*RRBSCREENWIDTH2)
+			sta colptrlo+1
+			lda #.byte1 (COLOR_RAM_OFFSET + 1*RRBSCREENWIDTH2)
+			sta colptrhi+1
 
 			lda #0x68						; reset textypos for start of screen
 			sta 0xd04e
@@ -103,6 +104,11 @@ scrptrlo:	lda #.byte0 (SCREEN + 1*RRBSCREENWIDTH2)
 scrptrhi:	lda #.byte1 (SCREEN + 1*RRBSCREENWIDTH2)
 			sta 0xd061
 
+colptrlo:	lda #.byte0 (COLOR_RAM_OFFSET + 1*RRBSCREENWIDTH2)
+			sta 0xd064
+colptrhi:	lda #.byte1 (COLOR_RAM_OFFSET + 1*RRBSCREENWIDTH2)
+			sta 0xd065
+
 textyposlo:	lda #0x67
 			sta 0xd04e
 textyposhi:	lda #0x00
@@ -115,6 +121,14 @@ textyposhi:	lda #0x00
 			lda scrptrhi+1
 			adc #.byte1 RRBSCREENWIDTH2
 			sta scrptrhi+1
+
+			clc
+			lda colptrlo+1
+			adc #.byte0 RRBSCREENWIDTH2
+			sta colptrlo+1
+			lda colptrhi+1
+			adc #.byte1 RRBSCREENWIDTH2
+			sta colptrhi+1
 
 			clc
 			lda textyposlo+1
