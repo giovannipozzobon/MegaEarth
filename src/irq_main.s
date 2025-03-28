@@ -28,7 +28,7 @@ irq_main:
 			phy
 			phz
 
-			lda #0x01
+			lda #0x0f
 			sta 0xd021
 
 			lda #0x02
@@ -44,9 +44,9 @@ irq_main:
 			lda #0x06
 			sta 0xd020
 
-			;jsr modplay_play
+			jsr modplay_play
 
-			lda #0x01
+			lda #0x0f
 			sta 0xd020
 
 			lda #.byte0 (SCREEN + 0*RRBSCREENWIDTH2)
@@ -95,7 +95,7 @@ irq_main2:
 			phy
 			phz
 
-			lda #0x07
+			lda #0x01
 			sta 0xd020
 
 scrptrlo:	lda #.byte0 (SCREEN + 1*RRBSCREENWIDTH2)
@@ -124,7 +124,7 @@ textyposhi:	lda #0x00
 			adc #0x00
 			sta textyposhi+1
 
-			lda #0x01
+			lda #0x0f
 			sta 0xd020
 
 			clc

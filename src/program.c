@@ -68,7 +68,7 @@ void program_init()
 	dma_runjob((__far char *)&dma_copypalette);
 
 	// render the first char for the background layer
-	uint16_t i = GFXMEM / 64;
+	uint16_t i = (GFXMEM / 64) + 16;
 	for(uint16_t y=0; y<50; y++)
 	{
 		for(uint16_t x=0; x<SCREENWIDTH; x++)
