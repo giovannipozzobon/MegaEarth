@@ -163,7 +163,7 @@ void program_init()
 		uint32_t pos2 = SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 1;
 		for(uint16_t x=0; x<RRBSPRITES-1; x++)
 		{
-			uint16_t sin = peek(&sine+64+foobar+i);
+			uint16_t sin = peek(&sine+foobar+i);
 			lpoke(pos1 + 4*x, sin & 0xff);
 			lpoke(pos2 + 4*x, sin >> 8);
 			i++;

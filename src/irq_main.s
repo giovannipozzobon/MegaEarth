@@ -332,7 +332,7 @@ fillsineouterloop:
 
 		ldy #0
 fillsineloop		
-		lda sine,y
+		lda sine+128+64,y
 		sta 0xd770
 		lda 0xd779
 		clc
