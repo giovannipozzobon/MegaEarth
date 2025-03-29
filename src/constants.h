@@ -1,13 +1,20 @@
 #ifndef __CONSTANTS_H
 #define __CONSTANTS_H
 
-#define SCREEN					0x05000
+#define SCREEN					0x05000	// 50*552 = #27600 = $6bd0 = ~$6c00
 
-#define GFXMEM					0x1c000
-#define GRADIENTMEM             0x16000
+#define PALETTE					0xcc00
+
+#define SINETEMP				0xe000
+
+#define TEXTUREMEM				0x10000	// $6000
+#define GRADIENTMEM             0x16000	// $1800
+#define BUMPMEM					0x18000 // $6000
+#define GFXMEM					0x1f000	// $0440
 
 #define SAMPLEADRESS			0x40000
 
+#define SLICESINUSES			0x20000 // 48*$0200 = $6000
 
 // theoretical maximum number of sprites:
 // $2000/25 = 327
@@ -22,14 +29,11 @@
 
 #define SCREENWIDTH				20
 #define RRBSPRITES				128
-#define RRBWIDTH				(2*RRBSPRITES)
-#define RRBSCREENWIDTH			(SCREENWIDTH+RRBWIDTH)
+#define RRBSCREENWIDTH			(SCREENWIDTH+2*RRBSPRITES)	// 276
 
-#define SCREENWIDTH2			(2*SCREENWIDTH)
-#define RRBSCREENWIDTH2			(2*RRBSCREENWIDTH)
-#define RRBWIDTH2				(2*RRBWIDTH)
-
-#define PALETTE					0xc000
+#define SCREENWIDTH2			(2*SCREENWIDTH)				// 40
+#define RRBSPRITES2				(2*RRBSPRITES)				// 256
+#define RRBSCREENWIDTH2			(2*RRBSCREENWIDTH)			// 552
 
 #define COLOR_RAM				0xff80000
 #define COLOR_RAM_OFFSET		0x0800

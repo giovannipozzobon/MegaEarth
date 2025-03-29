@@ -37,42 +37,54 @@ C_SRCS = main.c dma.c modplay.c dmajobs.c program.c
 OBJS = $(ASM_SRCS:%.s=$(EXE_DIR)/%.o) $(C_SRCS:%.c=$(EXE_DIR)/%.o)
 OBJS_DEBUG = $(ASM_SRCS:%.s=$(EXE_DIR)/%-debug.o) $(C_SRCS:%.c=$(EXE_DIR)/%-debug.o)
 
-BINFILES  = $(BIN_DIR)/gfx_chars0.bin
-BINFILES += $(BIN_DIR)/gfx_pal0.bin
+BINFILES  = $(BIN_DIR)/gfx_pal0.bin
 BINFILES += $(BIN_DIR)/earth_chars0.bin
 BINFILES += $(BIN_DIR)/spheregrad_chars0.bin
+BINFILES += $(BIN_DIR)/bump_chars0.bin
+BINFILES += $(BIN_DIR)/gfx_chars0.bin
 BINFILES += $(BIN_DIR)/song.mod
 
-BINFILESMC  = $(BIN_DIR)/gfx_chars0.bin.addr.mc
-BINFILESMC += $(BIN_DIR)/gfx_pal0.bin.addr.mc
+BINFILESMC  = $(BIN_DIR)/gfx_pal0.bin.addr.mc
 BINFILESMC += $(BIN_DIR)/earth_chars0.bin.addr.mc
 BINFILESMC += $(BIN_DIR)/spheregrad_chars0.bin.addr.mc
+BINFILESMC += $(BIN_DIR)/bump_chars0.bin.addr.mc
+BINFILESMC += $(BIN_DIR)/gfx_chars0.bin.addr.mc
 BINFILESMC += $(BIN_DIR)/song.mod.addr.mc
 
 # -----------------------------------------------------------------------------
 
-# direction = 3 = CharTopBottomLeftRight
-$(BIN_DIR)/gfx_chars0.bin: $(BIN_DIR)/gfx.bin
-	$(MC) $< cm1:2 d1:0 cl1:1c000 rc1:0
-
+# charmode  = 1 = SuperExtendedAttributeMode
 # direction = 2 = PixelLeftRightTopBottom
 $(BIN_DIR)/earth_chars0.bin: $(BIN_DIR)/earth.bin
 	$(MC) $< cm1:1 d1:2 cl1:10000 rc1:0
 
+# charmode  = 1 = SuperExtendedAttributeMode
 # direction = 2 = PixelLeftRightTopBottom
 $(BIN_DIR)/spheregrad_chars0.bin: $(BIN_DIR)/spheregrad.bin
 	$(MC) $< cm1:1 d1:2 cl1:16000 rc1:0
 
+# charmode  = 1 = SuperExtendedAttributeMode
+# direction = 2 = PixelLeftRightTopBottom
+$(BIN_DIR)/bump_chars0.bin: $(BIN_DIR)/bump.bin
+	$(MC) $< cm1:1 d1:2 cl1:18000 rc1:0
+
+# charmode  = 2 = NibbleColour
+# direction = 0 = CharLeftRightTopBottom
+$(BIN_DIR)/gfx_pal0.bin: $(BIN_DIR)/gfx.bin
+	$(MC) $< cm1:2 d1:0 cl1:1c000 rc1:0
+
 $(BIN_DIR)/alldata.bin: $(BINFILES)
-	$(MEGAADDRESS) $(BIN_DIR)/gfx_chars0.bin         0001c000
-	$(MEGAADDRESS) $(BIN_DIR)/gfx_pal0.bin           0000c000
+	$(MEGAADDRESS) $(BIN_DIR)/gfx_pal0.bin           0000cc00
 	$(MEGAADDRESS) $(BIN_DIR)/earth_chars0.bin       00010000
 	$(MEGAADDRESS) $(BIN_DIR)/spheregrad_chars0.bin  00016000
+	$(MEGAADDRESS) $(BIN_DIR)/bump_chars0.bin        00018000
+	$(MEGAADDRESS) $(BIN_DIR)/gfx_chars0.bin         0001c000
 	$(MEGAADDRESS) $(BIN_DIR)/song.mod               08000000
-	$(MEGACRUNCH) $(BIN_DIR)/gfx_chars0.bin.addr
 	$(MEGACRUNCH) $(BIN_DIR)/gfx_pal0.bin.addr
 	$(MEGACRUNCH) $(BIN_DIR)/earth_chars0.bin.addr
 	$(MEGACRUNCH) $(BIN_DIR)/spheregrad_chars0.bin.addr
+	$(MEGACRUNCH) $(BIN_DIR)/bump_chars0.bin.addr
+	$(MEGACRUNCH) $(BIN_DIR)/gfx_chars0.bin.addr
 	$(MEGACRUNCH) $(BIN_DIR)/song.mod.addr
 	$(MEGAIFFL) $(BINFILESMC) $(BIN_DIR)/alldata.bin
 

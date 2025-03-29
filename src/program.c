@@ -47,10 +47,11 @@ void program_loaddata()
 	fl_init();
 	fl_waiting();
 	floppy_iffl_fast_load_init("DATA");
-	floppy_iffl_fast_load(); // chars
 	floppy_iffl_fast_load(); // pal
 	floppy_iffl_fast_load(); // earth chars
 	floppy_iffl_fast_load(); // spheregrad values
+	floppy_iffl_fast_load(); // bump values
+	floppy_iffl_fast_load(); // NCM voxel chars
 	floppy_iffl_fast_load(); // song
 }
 
@@ -113,7 +114,7 @@ void program_init()
 	for(uint16_t y=0; y<48; y++)
 	{
 		i = (GFXMEM / 64);
-		for(uint16_t x=0; x<RRBWIDTH; x++)
+		for(uint16_t x=0; x<RRBSPRITES2; x++)
 		{
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, 0b00001100); // set to NCM mode and trim pixels
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, 0);
@@ -136,7 +137,7 @@ void program_init()
 	for(uint16_t y=0; y<50; y++)
 	{
 		i = 0;
-		for(uint16_t x=0; x<RRBWIDTH; x+=2)
+		for(uint16_t x=0; x<RRBSPRITES2; x+=2)
 		{
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, 0b10010000); // set gotox and transparency
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, 0); // pixel row mask flags

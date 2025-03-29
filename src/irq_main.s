@@ -184,7 +184,6 @@ endloop:
 
 copypositionline
 
-		; load up c64run at $4,2000
 		sta 0xd707							; inline DMA copy
 		.byte 0x80, 0						; sourcemb
 		.byte 0x81, 0						; destmb
@@ -194,7 +193,7 @@ copypositionline
 		.byte 0x00							; copy, no chain
 		.word 127							; count 128-1 because I don't want to touch the last gotox320 bytes
 cppsrc:	.word 0								; src (fill value)
-		.byte 0x02							; src bank
+		.byte (SLICESINUSES >> 16)			; src bank
 cppdst:	.word SCREEN+SCREENWIDTH			; dst
 		.byte 0x00							; dst bank
 		.byte 0x00							; cmd hi
@@ -206,7 +205,6 @@ cppdst:	.word SCREEN+SCREENWIDTH			; dst
 
 copytextureline
 
-		; load up c64run at $4,2000
 		sta 0xd707							; inline DMA copy
 		.byte 0x80, 0						; sourcemb
 		.byte 0x81, 0						; destmb
@@ -216,7 +214,7 @@ copytextureline
 		.byte 0x00							; copy, no chain
 		.word 127							; count 128-1 because I don't want to touch the last gotox320 bytes
 cptsrc:	.word 0								; src (fill value)
-		.byte 0x01							; src bank
+		.byte (TEXTUREMEM >> 16)			; src bank
 cptdst:	.word SCREEN+SCREENWIDTH			; dst
 		.byte 0x00							; dst bank
 		.byte 0x00							; cmd hi
@@ -337,8 +335,8 @@ fillsineloop
 		lda 0xd779
 		clc
 		adc diamoffset
-		sta 0xe000,y
-		sta 0xe100,y
+		sta SINETEMP+0x0000,y				; this can be $0100 big, with two 256 copies instead of 1 512
+		sta SINETEMP+0x0100,y
 		iny
 		bne fillsineloop
 
@@ -351,7 +349,7 @@ fillsineloop
 		.word 0xe000						; src (fill value)
 		.byte 0x00							; src bank (ignored)
 cpsdst:	.word 0								; dst
-		.byte 0x02							; dst bank
+		.byte (SLICESINUSES >> 16)			; dst bank
 		.byte 0x00							; cmd hi
 		.word 0x0000						; modulo, ignored
 
