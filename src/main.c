@@ -61,7 +61,7 @@ void main()
 
 	VIC4.TBDRPOSLSB		= 20;
 
-	VIC4.BBDRPOSLSB		= 240;
+	VIC4.BBDRPOSLSB		= 231; // was 240. set to 231 to hide lower bugs for now
 	VIC4.BBDRPOSMSB		= 1;
 
 	// to maximize RRB:

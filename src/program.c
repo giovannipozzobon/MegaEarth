@@ -62,41 +62,9 @@ void program_init()
 	modplay_init();
 	modplay_initmod(ATTICADDRESS, SAMPLEADRESS);
 	modplay_enable();
-
-	/*
-	// make palette gradients
-	uint8_t c = 0;
-	uint8_t d = 0;
-	for(uint8_t p=1; p<16; p++)
-	{
-		for(uint8_t x=0; x<16; x++)
-		{
-			c = peek(PALETTE + 0*0x100 + x);
-			c = (c << 4) | (c >> 4);
-			d = c - 6*(p-1);
-			if(d > c) d = 0;
-			c = (d << 4) | (d >> 4);
-			poke(PALETTE + 0*0x100 + p*16 + x, c);
-			c = peek(PALETTE + 1*0x100 + x);
-			c = (c << 4) | (c >> 4);
-			d = c - 6*(p-1);
-			if(d > c) d = 0;
-			c = (d << 4) | (d >> 4);
-			poke(PALETTE + 1*0x100 + p*16 + x, c);
-			c = peek(PALETTE + 2*0x100 + x);
-			c = (c << 4) | (c >> 4);
-			d = c - 6*(p-1);
-			if(d > c) d = 0;
-			c = (d << 4) | (d >> 4);
-			poke(PALETTE + 2*0x100 + p*16 + x, c);
-		}
-	}
-	*/
 	
 	dma_runjob((__far char *)&dma_clearcolorram1);
 	dma_runjob((__far char *)&dma_clearcolorram2);
-	//dma_runjob((__far char *)&dma_clearscreen1);
-	//dma_runjob((__far char *)&dma_clearscreen2);
 	dma_runjob((__far char *)&dma_copypalette);
 
 	// render the first char for the background layer
@@ -111,39 +79,24 @@ void program_init()
 	}
 
 	// render the sprites
+	i = (GFXMEM / 64);
 	for(uint16_t y=0; y<48; y++)
 	{
-		i = (GFXMEM / 64);
-		for(uint16_t x=0; x<RRBSPRITES2; x++)
-		{
-			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, 0b00001100); // set to NCM mode and trim pixels
-			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, 0);
-			lpoke(SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, ((i >> 0) & 0xff) + ((x>>1) & 0x0f) + 1);
-			lpoke(SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, ((i >> 8) & 0xff));
-		}
-	}
-
-	// render the gradient
-	for(uint16_t y=0; y<48; y++)
-	{
+		uint32_t colptr = SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2;
+		uint32_t scrptr = SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2;
 		for(uint16_t x=0; x<RRBSPRITES; x++)
 		{
 			uint8_t g = lpeek(GRADIENTMEM+y*128+x);
-			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 4*x + 3, g<<4); // set palette
-		}
-	}
-	
-	// render gotox chars and their positions
-	for(uint16_t y=0; y<50; y++)
-	{
-		i = 0;
-		for(uint16_t x=0; x<RRBSPRITES2; x+=2)
-		{
-			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, 0b10010000); // set gotox and transparency
-			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, 0); // pixel row mask flags
-			lpoke(SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 0, (320 >> 0) & 0xff);
-			lpoke(SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 2*x + 1, (320 >> 8) & 0xff);
-			i += 4;
+
+			lpoke(colptr + 4*x + 0, 0b10010000); // set gotox and transparency
+			lpoke(colptr + 4*x + 1, 0); // pixel row mask flags
+			lpoke(scrptr + 4*x + 0, 0);
+			lpoke(scrptr + 4*x + 1, 0);
+
+			lpoke(colptr + 4*x + 2, 0b00001100); // set to NCM mode and trim pixels
+			lpoke(colptr + 4*x + 3, g<<4); // set palette
+			lpoke(scrptr + 4*x + 2, ((i >> 0) & 0xff) + ((x>>1) & 0x0f) + 1);
+			lpoke(scrptr + 4*x + 3, ((i >> 8) & 0xff));
 		}
 	}
 
@@ -152,23 +105,6 @@ void program_init()
 	{
 		lpoke(SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 4*(RRBSPRITES-1) + 0, (320 >> 0) & 0xff);
 		lpoke(SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 4*(RRBSPRITES-1) + 1, (320 >> 8) & 0xff);
-	}
-
-	uint16_t foobar = 0;
-	// fill positions with spherical coordinates
-	for(uint16_t y=0; y<48; y++)
-	{
-		uint16_t i = 0;
-		uint32_t pos1 = SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 0;
-		uint32_t pos2 = SCREEN + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 1;
-		for(uint16_t x=0; x<RRBSPRITES-1; x++)
-		{
-			uint16_t sin = peek(&sine+foobar+i);
-			lpoke(pos1 + 4*x, sin & 0xff);
-			lpoke(pos2 + 4*x, sin >> 8);
-			i++;
-		}
-		foobar++;
 	}
 
 	fillsinetables();
