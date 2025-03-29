@@ -177,9 +177,7 @@ raster:		lda #0x34
 			asl 0xd019
 			rti
 
-endloop:
-
-			lda #0xff
+endloop:	lda #0xff
 			sta 0xd012
 
 			lda #.byte0 irq_main
@@ -199,43 +197,58 @@ endloop:
 
 copypositionline
 
-		sta 0xd707							; inline DMA copy
-		.byte 0x80, 0						; sourcemb
-		.byte 0x81, 0						; destmb
-		.byte 0x85, 4						; dst skip rate
-		.byte 0x00							; end of job options
+			sta 0xd707							; inline DMA copy
+			.byte 0x80, 0						; sourcemb
+			.byte 0x81, 0						; destmb
+			.byte 0x85, 4						; dst skip rate
+			.byte 0x00							; end of job options
+			.byte 0x00							; copy, no chain
+			.word 127							; count 128-1 because I don't want to touch the last gotox320 bytes
+cppsrc1:	.word 0								; src (fill value)
+			.byte (SLICESINUSES >> 16)			; src bank
+cppdst1:	.word SCREEN+SCREENWIDTH			; dst
+			.byte 0x00							; dst bank
+			.byte 0x00							; cmd hi
+			.word 0x0000						; modulo, ignored
 
-		.byte 0x00							; copy, no chain
-		.word 127							; count 128-1 because I don't want to touch the last gotox320 bytes
-cppsrc:	.word 0								; src (fill value)
-		.byte (SLICESINUSES >> 16)			; src bank
-cppdst:	.word SCREEN+SCREENWIDTH			; dst
-		.byte 0x00							; dst bank
-		.byte 0x00							; cmd hi
-		.word 0x0000						; modulo, ignored
+/*
+			sta 0xd707							; inline DMA copy
+			.byte 0x80, 0						; sourcemb
+			.byte 0x81, 0						; destmb
+			.byte 0x85, 4						; dst skip rate
+			.byte 0x00							; end of job options
+			.byte 0x00							; copy, no chain
+			.word 63							; count 128-1 because I don't want to touch the last gotox320 bytes
+cppsrc2:	.word 0								; src (fill value)
+			.byte (SLICESINUSES >> 16)			; src bank and flags | 0b01000000 = reverse direction
+cppdst2:	.word SCREEN+SCREENWIDTH			; dst
+			.byte 0x00							; dst bank and flags
+			.byte 0x00							; cmd hi
+			.word 0x0000						; modulo, ignored
+*/
 
-		rts
+			rts
 
 ; ------------------------------------------------------------------------------------
 
 copytextureline
 
-		sta 0xd707							; inline DMA copy
-		.byte 0x80, 0						; sourcemb
-		.byte 0x81, 0						; destmb
-		.byte 0x85, 4						; dst skip rate
-		.byte 0x00							; end of job options
+			sta 0xd707							; inline DMA copy
+			.byte 0x80, 0						; sourcemb
+			.byte 0x81, 0						; destmb
+			.byte 0x85, 4						; dst skip rate
+			.byte 0x00							; end of job options
 
-		.byte 0x00							; copy, no chain
-		.word 127							; count 128-1 because I don't want to touch the last gotox320 bytes
-cptsrc:	.word 0								; src (fill value)
-		.byte (TEXTUREMEM >> 16)			; src bank
-cptdst:	.word SCREEN+SCREENWIDTH			; dst
-		.byte 0x00							; dst bank
-		.byte 0x00							; cmd hi
-		.word 0x0000						; modulo, ignored
+			.byte 0x00							; copy, no chain
+			.word 127							; count 128-1 because I don't want to touch the last gotox320 bytes
+cptsrc:		.word 0								; src (fill value)
+			.byte (TEXTUREMEM >> 16)			; src bank
+cptdst:		.word SCREEN+SCREENWIDTH			; dst
+			.byte 0x00							; dst bank
+			.byte 0x00							; cmd hi
+			.word 0x0000						; modulo, ignored
 
-		rts
+			rts
 
 ; ------------------------------------------------------------------------------------
 
@@ -243,241 +256,241 @@ frame	.byte 0
 
 maptexture:
 
-		ldx #0
+			ldx #0
 
-		lda frame
-		sta cptsrc+0
-		lda #0
-		sta cptsrc+1
+			lda frame
+			sta cptsrc+0
+			lda #0
+			sta cptsrc+1
 
-		lda #.byte0 (SCREEN+SCREENWIDTH2+2)
-		sta cptdst+0
-		lda #.byte1 (SCREEN+SCREENWIDTH2+2)
-		sta cptdst+1
+			lda #.byte0 (SCREEN+SCREENWIDTH2+2)
+			sta cptdst+0
+			lda #.byte1 (SCREEN+SCREENWIDTH2+2)
+			sta cptdst+1
 
 copytxtlineloop:
-		jsr copytextureline
+			jsr copytextureline
 
-		clc
-		lda cptdst+0
-		adc #.byte0 RRBSCREENWIDTH2
-		sta cptdst+0
-		lda cptdst+1
-		adc #.byte1 RRBSCREENWIDTH2
-		sta cptdst+1
+			clc
+			lda cptdst+0
+			adc #.byte0 RRBSCREENWIDTH2
+			sta cptdst+0
+			lda cptdst+1
+			adc #.byte1 RRBSCREENWIDTH2
+			sta cptdst+1
 
-		inc cptsrc+1
-		inc cptsrc+1
+			inc cptsrc+1
+			inc cptsrc+1
 
-		inx
-		cpx #48
-		bne copytxtlineloop
+			inx
+			cpx #48
+			bne copytxtlineloop
 
-		rts
+			rts
 
 ; ------------------------------------------------------------------------------------
 
 		.public fillspherepositions
 fillspherepositions
 
-		ldx #0
+			ldx #0
 
-		lda #64
-		sta cppsrc+0
-		lda #0x0
-		sta cppsrc+1
+			lda #64
+			sta cppsrc1+0
+			lda #0x0
+			sta cppsrc1+1
 
-		lda #.byte0 (SCREEN+SCREENWIDTH2)
-		sta cppdst+0
-		lda #.byte1 (SCREEN+SCREENWIDTH2)
-		sta cppdst+1
+			lda #.byte0 (SCREEN+SCREENWIDTH2)
+			sta cppdst1+0
+			lda #.byte1 (SCREEN+SCREENWIDTH2)
+			sta cppdst1+1
 
 copyposlineloop:
-		jsr copypositionline
+			jsr copypositionline
 
-		clc
-		lda cppdst+0
-		adc #.byte0 RRBSCREENWIDTH2
-		sta cppdst+0
-		lda cppdst+1
-		adc #.byte1 RRBSCREENWIDTH2
-		sta cppdst+1
+			clc
+			lda cppdst1+0
+			adc #.byte0 RRBSCREENWIDTH2
+			sta cppdst1+0
+			lda cppdst1+1
+			adc #.byte1 RRBSCREENWIDTH2
+			sta cppdst1+1
 
-		inc cppsrc+1
-		inc cppsrc+1
+			inc cppsrc1+1
+			inc cppsrc1+1
 
-		inx
-		cpx #48
-		bne copyposlineloop
+			inx
+			cpx #48
+			bne copyposlineloop
 
-		rts
+			rts
 
 ; ------------------------------------------------------------------------------------
 
 		.public fillsinetables
 fillsinetables:
 
-		lda #0
-		sta 0xd770
-		sta 0xd771
-		sta 0xd772
-		sta 0xd773
-		sta 0xd774
-		sta 0xd775
-		sta 0xd776
-		sta 0xd777
-		sta cpsdst+0
-		sta cpsdst+1
+			lda #0
+			sta 0xd770
+			sta 0xd771
+			sta 0xd772
+			sta 0xd773
+			sta 0xd774
+			sta 0xd775
+			sta 0xd776
+			sta 0xd777
+			sta cpsdst+0
+			sta cpsdst+1
 
-		ldx #0
+			ldx #0
 fillsineouterloop:
 
-		lda spherediam,x
-		sta 0xd774
-		lsr a
-		sta diamhalf
-		sec
-		lda #128 ; +24
-		sbc diamhalf
-		sta diamoffset
+			lda spherediam,x
+			sta 0xd774
+			lsr a
+			sta diamhalf
+			sec
+			lda #128 ; +24
+			sbc diamhalf
+			sta diamoffset
 
-		ldy #0
+			ldy #0
 fillsineloop		
-		lda sine+128+64,y
-		sta 0xd770
-		lda 0xd779
-		clc
-		adc diamoffset
-		sta SINETEMP+0x0000,y				; this can be $0100 big, with two 256 copies instead of 1 512
-		sta SINETEMP+0x0100,y
-		iny
-		bne fillsineloop
+			lda sine+128+64,y
+			sta 0xd770
+			lda 0xd779
+			clc
+			adc diamoffset
+			sta SINETEMP+0x0000,y				; this can be $0100 big, with two 256 copies instead of 1 512
+			sta SINETEMP+0x0100,y
+			iny
+			bne fillsineloop
 
-		sta 0xd707							; inline DMA copy
-		.byte 0x80, 0						; sourcemb
-		.byte 0x81, 0						; destmb
-		.byte 0x00							; end of job options
-		.byte 0x00							; copy, no chain
-		.word 512							; count
-		.word 0xe000						; src (fill value)
-		.byte 0x00							; src bank (ignored)
-cpsdst:	.word 0								; dst
-		.byte (SLICESINUSES >> 16)			; dst bank
-		.byte 0x00							; cmd hi
-		.word 0x0000						; modulo, ignored
+			sta 0xd707							; inline DMA copy
+			.byte 0x80, 0						; sourcemb
+			.byte 0x81, 0						; destmb
+			.byte 0x00							; end of job options
+			.byte 0x00							; copy, no chain
+			.word 512							; count
+			.word 0xe000						; src (fill value)
+			.byte 0x00							; src bank (ignored)
+cpsdst:		.word 0								; dst
+			.byte (SLICESINUSES >> 16)			; dst bank
+			.byte 0x00							; cmd hi
+			.word 0x0000						; modulo, ignored
 
-		inc cpsdst+1
-		inc cpsdst+1
+			inc cpsdst+1
+			inc cpsdst+1
 
-		inx
-		cpx #48
-		bne fillsineouterloop
-		rts
+			inx
+			cpx #48
+			bne fillsineouterloop
+			rts
 
 ; ------------------------------------------------------------------------------------
 
-bump	.byte 0
+bump		.byte 0
 
 renderbumps:
 
-		lda #0
-		sta 0xd770
-		sta 0xd771
-		sta 0xd772
-		sta 0xd773
-		sta 0xd774
-		sta 0xd775
-		sta 0xd776
-		sta 0xd777
+			lda #0
+			sta 0xd770
+			sta 0xd771
+			sta 0xd772
+			sta 0xd773
+			sta 0xd774
+			sta 0xd775
+			sta 0xd776
+			sta 0xd777
 
-		lda #.byte0 (SCREEN + SCREENWIDTH2) ; + y*RRBSCREENWIDTH2
-		sta zp:_Zp+8
-		lda #.byte1 (SCREEN + SCREENWIDTH2) ; + y*RRBSCREENWIDTH2
-		sta zp:_Zp+9
+			lda #.byte0 (SCREEN + SCREENWIDTH2) ; + y*RRBSCREENWIDTH2
+			sta zp:_Zp+8
+			lda #.byte1 (SCREEN + SCREENWIDTH2) ; + y*RRBSCREENWIDTH2
+			sta zp:_Zp+9
 
-		lda #.byte0 (SCREEN + SCREENWIDTH2 + 256) ; + y*RRBSCREENWIDTH2
-		sta zp:_Zp+10
-		lda #.byte1 (SCREEN + SCREENWIDTH2 + 256) ; + y*RRBSCREENWIDTH2
-		sta zp:_Zp+11
+			lda #.byte0 (SCREEN + SCREENWIDTH2 + 256) ; + y*RRBSCREENWIDTH2
+			sta zp:_Zp+10
+			lda #.byte1 (SCREEN + SCREENWIDTH2 + 256) ; + y*RRBSCREENWIDTH2
+			sta zp:_Zp+11
 
-		lda #.byte0 BUMPMEM
-		sta zp:_Zp+16
-		lda #.byte1 BUMPMEM
-		sta zp:_Zp+17
-		lda #.byte2 BUMPMEM
-		sta zp:_Zp+18
-		lda #.byte3 BUMPMEM
-		sta zp:_Zp+19
+			lda #.byte0 BUMPMEM
+			sta zp:_Zp+16
+			lda #.byte1 BUMPMEM
+			sta zp:_Zp+17
+			lda #.byte2 BUMPMEM
+			sta zp:_Zp+18
+			lda #.byte3 BUMPMEM
+			sta zp:_Zp+19
 
-		lda #.byte0 (BUMPMEM+64)
-		sta zp:_Zp+20
-		lda #.byte1 (BUMPMEM+64)
-		sta zp:_Zp+21
-		lda #.byte2 (BUMPMEM+64)
-		sta zp:_Zp+22
-		lda #.byte3 (BUMPMEM+64)
-		sta zp:_Zp+23
+			lda #.byte0 (BUMPMEM+64)
+			sta zp:_Zp+20
+			lda #.byte1 (BUMPMEM+64)
+			sta zp:_Zp+21
+			lda #.byte2 (BUMPMEM+64)
+			sta zp:_Zp+22
+			lda #.byte3 (BUMPMEM+64)
+			sta zp:_Zp+23
 
-		ldx #0
+			ldx #0
 
 bumpouterloop
-		ldy #0
-		ldz frame
+			ldy #0
+			ldz frame
 bumploop:
-		lda [zp:_Zp+16],z
-		lsr a
-		lsr a
-		lsr a
-		sta bump
-		sec
-		lda (zp:_Zp+8),y
-		sbc bump
-		sta (zp:_Zp+8),y
+			lda [zp:_Zp+16],z
+			lsr a
+			lsr a
+			lsr a
+			sta bump
+			sec
+			lda (zp:_Zp+8),y
+			sbc bump
+			sta (zp:_Zp+8),y
 
-		lda [zp:_Zp+20],z
-		lsr a
-		lsr a
-		lsr a
-		sta bump
-		clc
-		lda (zp:_Zp+10),y
-		adc bump
-		sta (zp:_Zp+10),y
+			lda [zp:_Zp+20],z
+			lsr a
+			lsr a
+			lsr a
+			sta bump
+			clc
+			lda (zp:_Zp+10),y
+			adc bump
+			sta (zp:_Zp+10),y
 
-		inz
-		iny
-		iny
-		iny
-		iny
-		bne bumploop
+			inz
+			iny
+			iny
+			iny
+			iny
+			bne bumploop
 
-		clc
-		lda zp:_Zp+8
-		adc #.byte0 RRBSCREENWIDTH2
-		sta zp:_Zp+8
-		lda zp:_Zp+9
-		adc #.byte1 RRBSCREENWIDTH2
-		sta zp:_Zp+9
+			clc
+			lda zp:_Zp+8
+			adc #.byte0 RRBSCREENWIDTH2
+			sta zp:_Zp+8
+			lda zp:_Zp+9
+			adc #.byte1 RRBSCREENWIDTH2
+			sta zp:_Zp+9
 
-		inc zp:_Zp+17
-		inc zp:_Zp+17
+			inc zp:_Zp+17
+			inc zp:_Zp+17
 
-		clc
-		lda zp:_Zp+10
-		adc #.byte0 RRBSCREENWIDTH2
-		sta zp:_Zp+10
-		lda zp:_Zp+11
-		adc #.byte1 RRBSCREENWIDTH2
-		sta zp:_Zp+11
+			clc
+			lda zp:_Zp+10
+			adc #.byte0 RRBSCREENWIDTH2
+			sta zp:_Zp+10
+			lda zp:_Zp+11
+			adc #.byte1 RRBSCREENWIDTH2
+			sta zp:_Zp+11
 
-		inc zp:_Zp+21
-		inc zp:_Zp+21
+			inc zp:_Zp+21
+			inc zp:_Zp+21
 
-		inx
-		cpx #40
-		bne bumpouterloop
+			inx
+			cpx #40
+			bne bumpouterloop
 
-		rts
+			rts
 
 ; ------------------------------------------------------------------------------------
 
@@ -485,9 +498,9 @@ diamhalf	.byte 0
 diamoffset	.byte 0
 
 spherediam
-		;.byte  47,  86, 111, 131, 148, 161, 174, 185, 194, 203, 210, 217, 224, 229, 234, 238, 242, 245, 248, 250, 252, 254, 254, 255
-		;.byte 255, 254, 254, 252, 250, 248, 245, 242, 238, 234, 229, 224, 217, 210, 203, 194, 185, 174, 161, 148, 131, 111,  86,  47
+			;.byte  47,  86, 111, 131, 148, 161, 174, 185, 194, 203, 210, 217, 224, 229, 234, 238, 242, 245, 248, 250, 252, 254, 254, 255
+			;.byte 255, 254, 254, 252, 250, 248, 245, 242, 238, 234, 229, 224, 217, 210, 203, 194, 185, 174, 161, 148, 131, 111,  86,  47
 
-		.byte 41, 70, 89, 104, 117, 127, 137, 145, 153, 159, 165, 171, 176, 180, 184, 187, 190, 193, 195, 196, 198, 199, 200, 200
-		.byte 200, 200, 199, 198, 196, 195, 193, 190, 187, 184, 180, 176, 171, 165, 159, 153, 145, 137, 127, 117, 104, 89, 70, 41
+			.byte 41, 70, 89, 104, 117, 127, 137, 145, 153, 159, 165, 171, 176, 180, 184, 187, 190, 193, 195, 196, 198, 199, 200, 200
+			.byte 200, 200, 199, 198, 196, 195, 193, 190, 187, 184, 180, 176, 171, 165, 159, 153, 145, 137, 127, 117, 104, 89, 70, 41
 
