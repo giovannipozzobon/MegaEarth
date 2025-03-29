@@ -195,7 +195,7 @@ endloop:	lda #0xff
 
 ; ------------------------------------------------------------------------------------
 
-copypositionline
+copypositionline:
 
 			sta 0xd707							; inline DMA copy
 			.byte 0x80, 0						; sourcemb
@@ -204,7 +204,7 @@ copypositionline
 			.byte 0x00							; end of job options
 			.byte 0x00							; copy, no chain
 			.word 127							; count 128-1 because I don't want to touch the last gotox320 bytes
-cppsrc1:	.word 0								; src (fill value)
+cppsrc1:	.word 0								; src
 			.byte (SLICESINUSES >> 16)			; src bank
 cppdst1:	.word SCREEN+SCREENWIDTH			; dst
 			.byte 0x00							; dst bank
@@ -219,19 +219,18 @@ cppdst1:	.word SCREEN+SCREENWIDTH			; dst
 			.byte 0x00							; end of job options
 			.byte 0x00							; copy, no chain
 			.word 63							; count 128-1 because I don't want to touch the last gotox320 bytes
-cppsrc2:	.word 0								; src (fill value)
+cppsrc2:	.word 0								; src
 			.byte (SLICESINUSES >> 16)			; src bank and flags | 0b01000000 = reverse direction
 cppdst2:	.word SCREEN+SCREENWIDTH			; dst
 			.byte 0x00							; dst bank and flags
 			.byte 0x00							; cmd hi
 			.word 0x0000						; modulo, ignored
 */
-
 			rts
 
 ; ------------------------------------------------------------------------------------
 
-copytextureline
+copytextureline:
 
 			sta 0xd707							; inline DMA copy
 			.byte 0x80, 0						; sourcemb
@@ -295,9 +294,9 @@ fillspherepositions
 
 			ldx #0
 
-			lda #64
+			lda #0
 			sta cppsrc1+0
-			lda #0x0
+			lda #0
 			sta cppsrc1+1
 
 			lda #.byte0 (SCREEN+SCREENWIDTH2)
@@ -316,7 +315,6 @@ copyposlineloop:
 			adc #.byte1 RRBSCREENWIDTH2
 			sta cppdst1+1
 
-			inc cppsrc1+1
 			inc cppsrc1+1
 
 			inx
@@ -356,14 +354,14 @@ fillsineouterloop:
 
 			ldy #0
 fillsineloop		
-			lda sine+128+64,y
+			lda sine,y
 			sta 0xd770
 			lda 0xd779
 			clc
 			adc diamoffset
-			sta SINETEMP+0x0000,y				; this can be $0100 big, with two 256 copies instead of 1 512
-			sta SINETEMP+0x0100,y
+			sta SINETEMP+0x0000,y
 			iny
+			cpy #128
 			bne fillsineloop
 
 			sta 0xd707							; inline DMA copy
@@ -371,7 +369,7 @@ fillsineloop
 			.byte 0x81, 0						; destmb
 			.byte 0x00							; end of job options
 			.byte 0x00							; copy, no chain
-			.word 512							; count
+			.word 128							; count
 			.word 0xe000						; src (fill value)
 			.byte 0x00							; src bank (ignored)
 cpsdst:		.word 0								; dst
@@ -379,7 +377,6 @@ cpsdst:		.word 0								; dst
 			.byte 0x00							; cmd hi
 			.word 0x0000						; modulo, ignored
 
-			inc cpsdst+1
 			inc cpsdst+1
 
 			inx
