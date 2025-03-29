@@ -53,21 +53,21 @@ BINFILESMC += $(BIN_DIR)/song.mod.addr.mc
 
 # direction = 3 = CharTopBottomLeftRight
 $(BIN_DIR)/gfx_chars0.bin: $(BIN_DIR)/gfx.bin
-	$(MC) $< cm1:2 d1:0 cl1:10000 rc1:0
+	$(MC) $< cm1:2 d1:0 cl1:1c000 rc1:0
 
 # direction = 2 = PixelLeftRightTopBottom
 $(BIN_DIR)/earth_chars0.bin: $(BIN_DIR)/earth.bin
-	$(MC) $< cm1:1 d1:2 cl1:20000 rc1:0
+	$(MC) $< cm1:1 d1:2 cl1:10000 rc1:0
 
 # direction = 2 = PixelLeftRightTopBottom
 $(BIN_DIR)/spheregrad_chars0.bin: $(BIN_DIR)/spheregrad.bin
-	$(MC) $< cm1:1 d1:2 cl1:26000 rc1:0
+	$(MC) $< cm1:1 d1:2 cl1:16000 rc1:0
 
 $(BIN_DIR)/alldata.bin: $(BINFILES)
-	$(MEGAADDRESS) $(BIN_DIR)/gfx_chars0.bin         00010000
+	$(MEGAADDRESS) $(BIN_DIR)/gfx_chars0.bin         0001c000
 	$(MEGAADDRESS) $(BIN_DIR)/gfx_pal0.bin           0000c000
-	$(MEGAADDRESS) $(BIN_DIR)/earth_chars0.bin       00020000
-	$(MEGAADDRESS) $(BIN_DIR)/spheregrad_chars0.bin  00026000
+	$(MEGAADDRESS) $(BIN_DIR)/earth_chars0.bin       00010000
+	$(MEGAADDRESS) $(BIN_DIR)/spheregrad_chars0.bin  00016000
 	$(MEGAADDRESS) $(BIN_DIR)/song.mod               08000000
 	$(MEGACRUNCH) $(BIN_DIR)/gfx_chars0.bin.addr
 	$(MEGACRUNCH) $(BIN_DIR)/gfx_pal0.bin.addr

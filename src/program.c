@@ -127,9 +127,8 @@ void program_init()
 	{
 		for(uint16_t x=0; x<RRBSPRITES; x++)
 		{
-			uint8_t g = lpeek(0x26000+y*128+x);
+			uint8_t g = lpeek(GRADIENTMEM+y*128+x);
 			lpoke(SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2 + 4*x + 3, g<<4); // set palette
-			poke(0xc000+x, g);
 		}
 	}
 	

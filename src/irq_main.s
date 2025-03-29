@@ -194,7 +194,7 @@ copypositionline
 		.byte 0x00							; copy, no chain
 		.word 127							; count 128-1 because I don't want to touch the last gotox320 bytes
 cppsrc:	.word 0								; src (fill value)
-		.byte 0x03							; src bank
+		.byte 0x02							; src bank
 cppdst:	.word SCREEN+SCREENWIDTH			; dst
 		.byte 0x00							; dst bank
 		.byte 0x00							; cmd hi
@@ -216,7 +216,7 @@ copytextureline
 		.byte 0x00							; copy, no chain
 		.word 127							; count 128-1 because I don't want to touch the last gotox320 bytes
 cptsrc:	.word 0								; src (fill value)
-		.byte 0x02							; src bank
+		.byte 0x01							; src bank
 cptdst:	.word SCREEN+SCREENWIDTH			; dst
 		.byte 0x00							; dst bank
 		.byte 0x00							; cmd hi
@@ -351,7 +351,7 @@ fillsineloop
 		.word 0xe000						; src (fill value)
 		.byte 0x00							; src bank (ignored)
 cpsdst:	.word 0								; dst
-		.byte 0x03							; dst bank
+		.byte 0x02							; dst bank
 		.byte 0x00							; cmd hi
 		.word 0x0000						; modulo, ignored
 

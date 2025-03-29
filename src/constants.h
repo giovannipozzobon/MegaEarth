@@ -3,6 +3,12 @@
 
 #define SCREEN					0x05000
 
+#define GFXMEM					0x1c000
+#define GRADIENTMEM             0x16000
+
+#define SAMPLEADRESS			0x40000
+
+
 // theoretical maximum number of sprites:
 // $2000/25 = 327
 
@@ -25,16 +31,12 @@
 
 #define PALETTE					0xc000
 
-#define GFXMEM					0x10000
-
 #define COLOR_RAM				0xff80000
 #define COLOR_RAM_OFFSET		0x0800
 #define SAFE_COLOR_RAM			(COLOR_RAM + COLOR_RAM_OFFSET)
 #define SAFE_COLOR_RAM_IN1MB	(SAFE_COLOR_RAM - $ff00000)	
 
 #define MAPPEDCOLOURMEM			0x08000
-
-#define SAMPLEADRESS			(0x40000)
 
 #define ATTICADDRESS			0x08000000
 
