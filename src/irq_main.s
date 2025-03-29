@@ -28,10 +28,25 @@ irq_main:
 
 			jsr program_update
 
-			;lda #0x04
-			;sta 0xd020
+			inc frame
+
+			lda #0x01
+			sta 0xd020
 
 			jsr maptexture
+
+			lda #0x08
+			sta 0xd020
+
+			jsr fillspherepositions
+
+			lda #0x0a
+			sta 0xd020
+
+			jsr renderbumps
+
+			lda #0x0f
+			sta 0xd020
 
 			;lda #0x06
 			;sta 0xd020
@@ -228,8 +243,6 @@ frame	.byte 0
 
 maptexture:
 
-		inc frame
-
 		ldx #0
 
 		lda frame
@@ -324,7 +337,7 @@ fillsineouterloop:
 		lsr a
 		sta diamhalf
 		sec
-		lda #128+24
+		lda #128 ; +24
 		sbc diamhalf
 		sta diamoffset
 
@@ -363,6 +376,111 @@ cpsdst:	.word 0								; dst
 
 ; ------------------------------------------------------------------------------------
 
+bump	.byte 0
+
+renderbumps:
+
+		lda #0
+		sta 0xd770
+		sta 0xd771
+		sta 0xd772
+		sta 0xd773
+		sta 0xd774
+		sta 0xd775
+		sta 0xd776
+		sta 0xd777
+
+		lda #.byte0 (SCREEN + SCREENWIDTH2) ; + y*RRBSCREENWIDTH2
+		sta zp:_Zp+8
+		lda #.byte1 (SCREEN + SCREENWIDTH2) ; + y*RRBSCREENWIDTH2
+		sta zp:_Zp+9
+
+		lda #.byte0 (SCREEN + SCREENWIDTH2 + 256) ; + y*RRBSCREENWIDTH2
+		sta zp:_Zp+10
+		lda #.byte1 (SCREEN + SCREENWIDTH2 + 256) ; + y*RRBSCREENWIDTH2
+		sta zp:_Zp+11
+
+		lda #.byte0 BUMPMEM
+		sta zp:_Zp+16
+		lda #.byte1 BUMPMEM
+		sta zp:_Zp+17
+		lda #.byte2 BUMPMEM
+		sta zp:_Zp+18
+		lda #.byte3 BUMPMEM
+		sta zp:_Zp+19
+
+		lda #.byte0 (BUMPMEM+64)
+		sta zp:_Zp+20
+		lda #.byte1 (BUMPMEM+64)
+		sta zp:_Zp+21
+		lda #.byte2 (BUMPMEM+64)
+		sta zp:_Zp+22
+		lda #.byte3 (BUMPMEM+64)
+		sta zp:_Zp+23
+
+		ldx #0
+
+bumpouterloop
+		ldy #0
+		ldz frame
+bumploop:
+		lda [zp:_Zp+16],z
+		lsr a
+		lsr a
+		lsr a
+		sta bump
+		sec
+		lda (zp:_Zp+8),y
+		sbc bump
+		sta (zp:_Zp+8),y
+
+		lda [zp:_Zp+20],z
+		lsr a
+		lsr a
+		lsr a
+		sta bump
+		clc
+		lda (zp:_Zp+10),y
+		adc bump
+		sta (zp:_Zp+10),y
+
+		inz
+		iny
+		iny
+		iny
+		iny
+		bne bumploop
+
+		clc
+		lda zp:_Zp+8
+		adc #.byte0 RRBSCREENWIDTH2
+		sta zp:_Zp+8
+		lda zp:_Zp+9
+		adc #.byte1 RRBSCREENWIDTH2
+		sta zp:_Zp+9
+
+		inc zp:_Zp+17
+		inc zp:_Zp+17
+
+		clc
+		lda zp:_Zp+10
+		adc #.byte0 RRBSCREENWIDTH2
+		sta zp:_Zp+10
+		lda zp:_Zp+11
+		adc #.byte1 RRBSCREENWIDTH2
+		sta zp:_Zp+11
+
+		inc zp:_Zp+21
+		inc zp:_Zp+21
+
+		inx
+		cpx #40
+		bne bumpouterloop
+
+		rts
+
+; ------------------------------------------------------------------------------------
+
 diamhalf	.byte 0
 diamoffset	.byte 0
 
@@ -372,3 +490,4 @@ spherediam
 
 		.byte 41, 70, 89, 104, 117, 127, 137, 145, 153, 159, 165, 171, 176, 180, 184, 187, 190, 193, 195, 196, 198, 199, 200, 200
 		.byte 200, 200, 199, 198, 196, 195, 193, 190, 187, 184, 180, 176, 171, 165, 159, 153, 145, 137, 127, 117, 104, 89, 70, 41
+
