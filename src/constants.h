@@ -1,7 +1,7 @@
 #ifndef __CONSTANTS_H
 #define __CONSTANTS_H
 
-#define SCREEN					0x05000	// 50*552 = #27600 = $6bd0 = ~$6c00
+#define SCREEN					0x06000	// 50*552 = #27600 = $6bd0 = ~$6c00
 
 #define PALETTE					0xcc00
 
@@ -9,8 +9,8 @@
 
 #define TEXTUREMEM				0x10000	// $6000
 #define GRADIENTMEM             0x16000	// $1800
-#define BUMPMEM					0x18000 // $6000
-#define GFXMEM					0x1f000	// $0440
+#define GFXMEM					0x18000	// $0440 needs to be aligned to $4000 ($4000/64=256) for highbyte char to work
+#define BUMPMEM					0x19000 // $6000
 
 #define SAMPLEADRESS			0x40000
 

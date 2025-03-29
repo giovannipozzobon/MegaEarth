@@ -50,8 +50,8 @@ void program_loaddata()
 	floppy_iffl_fast_load(); // pal
 	floppy_iffl_fast_load(); // earth chars
 	floppy_iffl_fast_load(); // spheregrad values
-	floppy_iffl_fast_load(); // bump values
 	floppy_iffl_fast_load(); // NCM voxel chars
+	floppy_iffl_fast_load(); // bump values
 	floppy_iffl_fast_load(); // song
 }
 

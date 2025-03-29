@@ -40,15 +40,15 @@ OBJS_DEBUG = $(ASM_SRCS:%.s=$(EXE_DIR)/%-debug.o) $(C_SRCS:%.c=$(EXE_DIR)/%-debu
 BINFILES  = $(BIN_DIR)/gfx_pal0.bin
 BINFILES += $(BIN_DIR)/earth_chars0.bin
 BINFILES += $(BIN_DIR)/spheregrad_chars0.bin
-BINFILES += $(BIN_DIR)/bump_chars0.bin
 BINFILES += $(BIN_DIR)/gfx_chars0.bin
+BINFILES += $(BIN_DIR)/bump_chars0.bin
 BINFILES += $(BIN_DIR)/song.mod
 
 BINFILESMC  = $(BIN_DIR)/gfx_pal0.bin.addr.mc
 BINFILESMC += $(BIN_DIR)/earth_chars0.bin.addr.mc
 BINFILESMC += $(BIN_DIR)/spheregrad_chars0.bin.addr.mc
-BINFILESMC += $(BIN_DIR)/bump_chars0.bin.addr.mc
 BINFILESMC += $(BIN_DIR)/gfx_chars0.bin.addr.mc
+BINFILESMC += $(BIN_DIR)/bump_chars0.bin.addr.mc
 BINFILESMC += $(BIN_DIR)/song.mod.addr.mc
 
 # -----------------------------------------------------------------------------
@@ -77,14 +77,14 @@ $(BIN_DIR)/alldata.bin: $(BINFILES)
 	$(MEGAADDRESS) $(BIN_DIR)/gfx_pal0.bin           0000cc00
 	$(MEGAADDRESS) $(BIN_DIR)/earth_chars0.bin       00010000
 	$(MEGAADDRESS) $(BIN_DIR)/spheregrad_chars0.bin  00016000
-	$(MEGAADDRESS) $(BIN_DIR)/bump_chars0.bin        00018000
-	$(MEGAADDRESS) $(BIN_DIR)/gfx_chars0.bin         0001c000
+	$(MEGAADDRESS) $(BIN_DIR)/gfx_chars0.bin         00018000
+	$(MEGAADDRESS) $(BIN_DIR)/bump_chars0.bin        00019000
 	$(MEGAADDRESS) $(BIN_DIR)/song.mod               08000000
 	$(MEGACRUNCH) $(BIN_DIR)/gfx_pal0.bin.addr
 	$(MEGACRUNCH) $(BIN_DIR)/earth_chars0.bin.addr
 	$(MEGACRUNCH) $(BIN_DIR)/spheregrad_chars0.bin.addr
-	$(MEGACRUNCH) $(BIN_DIR)/bump_chars0.bin.addr
 	$(MEGACRUNCH) $(BIN_DIR)/gfx_chars0.bin.addr
+	$(MEGACRUNCH) $(BIN_DIR)/bump_chars0.bin.addr
 	$(MEGACRUNCH) $(BIN_DIR)/song.mod.addr
 	$(MEGAIFFL) $(BINFILESMC) $(BIN_DIR)/alldata.bin
 
