@@ -59,6 +59,9 @@ void program_init()
 {
 	VIC2.BORDERCOL = 0x00;
 	VIC2.SCREENCOL = 0x00;
+
+	VIC2.DEN = 0; // disable display
+
 	modplay_init();
 	modplay_initmod(ATTICADDRESS, SAMPLEADRESS);
 	modplay_enable();
@@ -80,23 +83,23 @@ void program_init()
 
 	// render the sprites
 	i = (GFXMEM / 64);
-	for(uint16_t y=0; y<48; y++)
+	for(uint16_t y=0; y<50; y++)
 	{
 		uint32_t colptr = SAFE_COLOR_RAM + SCREENWIDTH2 + y*RRBSCREENWIDTH2;
-		uint32_t scrptr = SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2;
+		uint16_t scrptr = SCREEN         + SCREENWIDTH2 + y*RRBSCREENWIDTH2;
 		for(uint16_t x=0; x<RRBSPRITES; x++)
 		{
 			uint8_t g = lpeek(GRADIENTMEM+y*128+x);
 
 			lpoke(colptr + 4*x + 0, 0b10010000); // set gotox and transparency
 			lpoke(colptr + 4*x + 1, 0); // pixel row mask flags
-			lpoke(scrptr + 4*x + 0, 0);
-			lpoke(scrptr + 4*x + 1, 0);
+			poke(scrptr + 4*x + 0, 0);
+			poke(scrptr + 4*x + 1, 0);
 
 			lpoke(colptr + 4*x + 2, 0b00001100); // set to NCM mode and trim pixels
 			lpoke(colptr + 4*x + 3, g<<4); // set palette
-			lpoke(scrptr + 4*x + 2, ((i >> 0) & 0xff) + ((x>>1) & 0x0f) + 1);
-			lpoke(scrptr + 4*x + 3, ((i >> 8) & 0xff));
+			poke(scrptr + 4*x + 2, 0);
+			poke(scrptr + 4*x + 3, ((i >> 8) & 0xff));
 		}
 	}
 
@@ -109,15 +112,10 @@ void program_init()
 
 	fillsinetables();
 	fillspherepositions();
-}
 
-uint8_t offset = 0;
+	VIC2.DEN = 1; // enable display
+}
 
 void program_update()
 {
-	//program_mapcolourmem();
-
-	// offset++;
-
-	//program_unmapcolourmem();
 }
