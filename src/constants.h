@@ -14,7 +14,7 @@
 
 #define SAMPLEADRESS			0x40000
 
-#define SLICESINUSES			0x20000 // 48*$0200 = $6000
+#define SLICESINUSES			0x20000 // 48*$0100 = $3000 // could go down to 48*$0080 !!!
 
 // theoretical maximum number of sprites:
 // $2000/25 = 327
