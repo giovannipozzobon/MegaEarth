@@ -26,40 +26,40 @@ irq_main:
 			sta 0xd020
 			sta 0xd021
 
-			lda #0x02
-			sta 0xd020
-
-			jsr program_update
+			;lda #0x02
+			;sta 0xd020
 
 			inc frame
 
-			lda #0x01
-			sta 0xd020
+			jsr program_update
+
+			;lda #0x01
+			;sta 0xd020
 
 			jsr initmaptexture
 			jsr maptexture
 
-			lda #0x08
-			sta 0xd020
+			;lda #0x08
+			;sta 0xd020
 
 			jsr initfillspherepositions
 			jsr fillspherepositions
 
-			lda #0x0a
-			sta 0xd020
+			;lda #0x0a
+			;sta 0xd020
 
 			jsr modplay_play
 
-			lda #0x06
-			sta 0xd020
+			;lda #0x06
+			;sta 0xd020
 
 			jsr initrenderbumps
 			;jsr renderbumps
 			jsr renderbumpline ; render first bump line
 			jsr renderbumpline ; render first bump line
 
-			lda #0x0f
-			sta 0xd020
+			;lda #0x0f
+			;sta 0xd020
 
 			lda #.byte0 (SCREEN + 0*RRBSCREENWIDTH2)
 			sta 0xd060
@@ -169,11 +169,11 @@ textyposhi:	lda #0x00
 			cmp #0x35+50*4
 			beq endloop
 
-			lda #0x02
-			sta 0xd020
+			;lda #0x02
+			;sta 0xd020
 			jsr renderbumpline
-			lda #0x0f
-			sta 0xd020
+			;lda #0x0f
+			;sta 0xd020
 
 			;jmp endloop
 
@@ -479,7 +479,7 @@ initrenderbumps:
 			sta 0xd776
 			sta 0xd777
 
-			lda #0x10
+			lda #0xff
 			sta 0xd770
 
 			lda #.byte0 (SCREEN + SCREENWIDTH2) ; + y*RRBSCREENWIDTH2
@@ -510,11 +510,16 @@ renderbumpline:
 			ldy #0
 			ldz frame
 bumpleftloop:
+			tya
+			eor #0xff
+			sta 0xd770
 			lda [zp:_Zp+234],z
 			sta 0xd774
 			sec
 			lda (zp:_Zp+242),y
 			sbc 0xd779
+			clc
+			adc #1
 			sta (zp:_Zp+242),y
 			inz
 			iny
@@ -528,11 +533,16 @@ bumpleftloop:
 			adc #64
 			taz
 bumprightloop:
+			tya
+			eor #0xff
+			sta 0xd770
 			lda [zp:_Zp+234],z
 			sta 0xd774
 			clc
 			lda (zp:_Zp+244),y
 			adc 0xd779
+			sec
+			sbc #1
 			sta (zp:_Zp+244),y
 			dez
 			iny
