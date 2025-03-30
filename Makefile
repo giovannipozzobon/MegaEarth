@@ -105,40 +105,40 @@ $(EXE_DIR)/%-debug.o: %.c
 # megacrunch start address -f 100e
 # scm file   address (#x1001) section (programStart #x1001)
 
-$(EXE_DIR)/cprog.prg: $(OBJS)
+$(EXE_DIR)/megavoxl.prg: $(OBJS)
 	ln6502 --target=mega65 mega65-custom.scm -o $@ $^ --load-address 0x1200 --raw-multiple-memories --cstartup=mystartup --rtattr printf=nofloat --rtattr exit=simplified --output-format=prg --list-file=$(EXE_DIR)/cprog.lst
 
-$(EXE_DIR)/cprog.prg.mc: $(EXE_DIR)/cprog.prg
-	$(MEGACRUNCH) -f 1200 $(EXE_DIR)/cprog.prg
+$(EXE_DIR)/megavoxl.prg.mc: $(EXE_DIR)/megavoxl.prg
+	$(MEGACRUNCH) -f 1200 $(EXE_DIR)/megavoxl.prg
 
 # -----------------------------------------------------------------------------
 
-$(EXE_DIR)/cprog.d81: $(EXE_DIR)/cprog.prg.mc  $(BIN_DIR)/alldata.bin
+$(EXE_DIR)/megavoxl.d81: $(EXE_DIR)/megavoxl.prg.mc  $(BIN_DIR)/alldata.bin
 	$(RM) $@
-	$(CC1541) -n "cprog" -i " 2024" -d 19 -v\
+	$(CC1541) -n "megavoxl" -i " 2025" -d 19 -v\
 	 \
-	 -f "cprog" -w $(EXE_DIR)/cprog.prg.mc \
-	 -f "data" -w $(BIN_DIR)/alldata.bin \
+	 -f "megavoxl"      -w $(EXE_DIR)/megavoxl.prg.mc \
+	 -f "megavoxl.dat"  -w $(BIN_DIR)/alldata.bin \
 	$@
 
 # -----------------------------------------------------------------------------
 
-run: $(EXE_DIR)/cprog.d81
+run: $(EXE_DIR)/megavoxl.d81
 
 ifeq ($(megabuild), 1)
-	$(MEGAFTP) -c "put .\exe\cprog.d81 cprog.d81" -c "quit"
-	$(EL) -m CPROG.D81 -r $(EXE_DIR)/cprog.prg.mc
+	$(MEGAFTP) -c "put .\exe\megavoxl.d81 megavoxl.d81" -c "quit"
+	$(EL) -m MEGAVOXL.D81 -r $(EXE_DIR)/megavoxl.prg.mc
 ifeq ($(attachdebugger), 1)
 	m65dbg --device /dev/ttyS2
 endif
 else
 ifeq ($(attachdebugger), 1)
-	cmd.exe /c "$(XMEGA65) -uartmon :4510 -autoload -8 $(EXE_DIR)/cprog.d81" & m65dbg -l tcp 4510
+	cmd.exe /c "$(XMEGA65) -uartmon :4510 -autoload -8 $(EXE_DIR)/megavoxl.d81" & m65dbg -l tcp 4510
 else
-	cmd.exe /c "$(XMEGA65) -autoload -8 $(EXE_DIR)/cprog.d81"
+	cmd.exe /c "$(XMEGA65) -autoload -8 $(EXE_DIR)/megavoxl.d81"
 endif
 endif
 
 clean:
 	-rm -f $(OBJS) $(OBJS:%.o=%.clst) $(OBJS_DEBUG) $(OBJS_DEBUG:%.o=%.clst) $(BIN_DIR)/*_*.bin
-	-rm -f $(EXE_DIR)/cprog.d81 $(EXE_DIR)/cprog.elf $(EXE_DIR)/cprog.prg $(EXE_DIR)/cprog.prg.mc $(EXE_DIR)/cprog.lst $(EXE_DIR)/cprog-debug.lst
+	-rm -f $(EXE_DIR)/megavoxl.d81 $(EXE_DIR)/megavoxl.elf $(EXE_DIR)/megavoxl.prg $(EXE_DIR)/megavoxl.prg.mc $(EXE_DIR)/megavoxl.lst $(EXE_DIR)/megavoxl-debug.lst
