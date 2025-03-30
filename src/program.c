@@ -11,6 +11,7 @@
 
 extern void irq_main();
 extern void fillsinetables();
+extern void initfillspherepositions();
 extern void fillspherepositions();
 
 void program_mapcolourmem()
@@ -111,6 +112,7 @@ void program_init()
 	}
 
 	fillsinetables();
+	initfillspherepositions();
 	fillspherepositions();
 
 	VIC2.DEN = 1; // enable display
