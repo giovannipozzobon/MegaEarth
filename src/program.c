@@ -47,7 +47,7 @@ void program_loaddata()
 {
 	fl_init();
 	fl_waiting();
-	floppy_iffl_fast_load_init("DATA");
+	floppy_iffl_fast_load_init("MEGAVOXL.DAT");
 	floppy_iffl_fast_load(); // pal
 	floppy_iffl_fast_load(); // earth chars
 	floppy_iffl_fast_load(); // spheregrad values

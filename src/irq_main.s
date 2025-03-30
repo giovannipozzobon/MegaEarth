@@ -42,6 +42,8 @@ irq_main:
 			;lda #0x08
 			;sta 0xd020
 
+			jsr fillsinetables
+
 			jsr initfillspherepositions
 			jsr fillspherepositions
 
@@ -307,7 +309,7 @@ initmaptexture:
 
 maptexture:
 
-			ldx #0
+			ldx #47
 
 copytxtlineloop:
 			jsr copytextureline
@@ -334,9 +336,8 @@ copytxtlineloop:
 			inc cptsrc2+1
 			inc cptsrc2+1
 
-			inx
-			cpx #48
-			bne copytxtlineloop
+			dex
+			bpl copytxtlineloop
 
 			rts
 
@@ -372,7 +373,7 @@ initfillspherepositions:
 		.public fillspherepositions
 fillspherepositions
 
-			ldx #0
+			ldx #47
 
 copyposlineloop:
 			jsr copypositionline
@@ -397,9 +398,8 @@ copyposlineloop:
 
 			inc cppsrc2+1
 
-			inx
-			cpx #48
-			bne copyposlineloop
+			dex
+			bpl copyposlineloop
 
 			rts
 
@@ -420,7 +420,7 @@ fillsinetables:
 			sta cpsdst+0
 			sta cpsdst+1
 
-			ldx #0
+			ldx #47
 fillsineouterloop:
 
 			lda spherediam,x
@@ -432,17 +432,16 @@ fillsineouterloop:
 			sbc diamhalf
 			sta diamoffset
 
-			ldy #0
-fillsineloop		
+			ldy #127
+fillsineloop:
 			lda sine,y
 			sta 0xd770
 			lda 0xd779
-			clc
+			;clc
 			adc diamoffset
 			sta SINETEMP+0x0000,y
-			iny
-			cpy #128
-			bne fillsineloop
+			dey
+			bpl fillsineloop
 
 			sta 0xd707							; inline DMA copy
 			.byte 0x80, 0						; sourcemb
@@ -459,9 +458,8 @@ cpsdst:		.word 0								; dst
 
 			inc cpsdst+1
 
-			inx
-			cpx #48
-			bne fillsineouterloop
+			dex
+			bpl fillsineouterloop
 			rts
 
 ; ------------------------------------------------------------------------------------
