@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 
-megabuild		= 1
-attachdebugger	= 0
+megabuild		= 0
+attachdebugger	= 1
 
 # -----------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ MEGAADDRESS		= megatool -a
 MEGACRUNCH		= megatool -c
 MEGAIFFL		= megatool -i
 EL				= etherload
-XMEGA65			= D:\PCTOOLS\xemu\xmega65.exe
+XMEGA65			= xmega65.exe
 MEGAFTP			= mega65_ftp -e
 
 .SUFFIXES: .o .s .out .bin .pu .b2 .a
@@ -114,12 +114,11 @@ $(EXE_DIR)/megavoxl.prg.mc: $(EXE_DIR)/megavoxl.prg
 # -----------------------------------------------------------------------------
 
 $(EXE_DIR)/megavoxl.d81: $(EXE_DIR)/megavoxl.prg.mc  $(BIN_DIR)/alldata.bin
-	$(RM) $@
-	$(CC1541) -n "megavoxl" -i " 2025" -d 19 -v\
+	- $(RM) $@
+	$(CC1541) -n "megavoxl" -i "2025" -d 19 -v\
 	 \
 	 -f "megavoxl"      -w $(EXE_DIR)/megavoxl.prg.mc \
-	 -f "megavoxl.dat"  -w $(BIN_DIR)/alldata.bin \
-	$@
+	 -f "megavoxl.dat"  -w $(BIN_DIR)/alldata.bin $@
 
 # -----------------------------------------------------------------------------
 
@@ -133,7 +132,8 @@ ifeq ($(attachdebugger), 1)
 endif
 else
 ifeq ($(attachdebugger), 1)
-	cmd.exe /c "$(XMEGA65) -uartmon :4510 -autoload -8 $(EXE_DIR)/megavoxl.d81" & m65dbg -l tcp 4510
+	start "" $(XMEGA65) -uartmon :4510 -autoload -8 $(EXE_DIR)/megavoxl.d81 & \
+	start "" m65dbg -l tcp 4510
 else
 	cmd.exe /c "$(XMEGA65) -autoload -8 $(EXE_DIR)/megavoxl.d81"
 endif
